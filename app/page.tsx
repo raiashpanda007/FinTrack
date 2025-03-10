@@ -1,6 +1,6 @@
-import PrimaryButton from "@/Components/PrimaryButton";
+
 import SecondaryButton from "@/Components/SecondaryButton";
-import CreateUserDialogBox from "@/Components/Landing/CreateUserDialogBox";
+import CreateTransaction from "@/Components/Landing/CreateTransaction";
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
 
       {/* Buttons / Dialog */}
       <div className="w-full max-w-md mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <CreateUserDialogBox />
+        <CreateTransaction />
         <SecondaryButton label="Users" />
       </div>
     </div>

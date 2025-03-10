@@ -5,7 +5,7 @@ interface ButtonProps{
   }
 function SecondaryButton({label,onClick}:ButtonProps) {
   return (
-    <Button >
+    <Button className="cursor-pointer">
         {label}
     </Button>
   )

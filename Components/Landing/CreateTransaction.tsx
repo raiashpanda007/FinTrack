@@ -13,24 +13,25 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import PrimaryButton from "../PrimaryButton";
-import CreateUserForm from "./CreateUserForm";
+import CreateTransactionForm from "./CreateTransForm";
 
-function CreateUserDialogBox() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+function CreateTransaction() {
+  const [amount, setAmount] = useState<number | undefined>();
+  const [description, setDescription] = useState("");
+  const [category,setCategory] = useState("");
 
   return (
     <AlertDialog>
       {/* Trigger asChild so we don't nest a button inside a button */}
       <AlertDialogTrigger asChild>
-        <PrimaryButton label="Create User" />
+        <PrimaryButton label="Add transaction" />
       </AlertDialogTrigger>
 
       {/* Make the content responsive with max-w and padding */}
       <AlertDialogContent className="w-full max-w-md mx-auto p-4 sm:p-6">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl sm:text-3xl font-extrabold text-red-500">
-            Create a user
+            Create a transaction
           </AlertDialogTitle>
           <AlertDialogDescription className="mt-2 text-sm sm:text-base text-gray-500">
             Take control of your finances with ease! Create a user profile and start tracking your
@@ -40,11 +41,12 @@ function CreateUserDialogBox() {
         </AlertDialogHeader>
 
         <div className="mt-4">
-          <CreateUserForm
-            name={name}
-            email={email}
-            setName={setName}
-            setEmail={setEmail}
+          <CreateTransactionForm
+            amount={amount}
+            description={description}
+            setAmount={setAmount}
+            setDescription={setDescription}
+            setCategory={setCategory}
           />
         </div>
 
@@ -57,7 +59,7 @@ function CreateUserDialogBox() {
           {/* Use asChild to avoid nested buttons */}
           <AlertDialogAction asChild>
             <PrimaryButton
-              label="Create User"
+              label="Add Transaction"
               onClick={() => console.log("Clicked")}
             />
           </AlertDialogAction>
@@ -67,4 +69,4 @@ function CreateUserDialogBox() {
   );
 }
 
-export default CreateUserDialogBox;
+export default CreateTransaction;
