@@ -10,10 +10,12 @@ datasource db {
 model Transaction {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   amount     Float
-  currency   String
+  description   String
   categoryId String   @db.ObjectId 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  type       String
+  date       DateTime
 }
 
 model Category {

@@ -5,19 +5,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import React from "react";
 import { Select } from "@/components/ui/select";
 import SelectCategories from "./SelectCategories";
+import { DatePickerDemo } from "./DatePicker";
 interface CreateTransFormProps {
   amount: number | undefined;
   description: string;
   setAmount: React.Dispatch<React.SetStateAction<number | undefined>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
+  setTransDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }
 function CreateTransForm({
   amount,
   description,
   setAmount,
   setDescription,
-  setCategory
+  setCategory,
+  setTransDate
 }: CreateTransFormProps) {
   return (
     <form className="space-y-4">
@@ -56,6 +59,7 @@ function CreateTransForm({
         />
       </div>
       <SelectCategories selectedCategory={setCategory} />
+      <DatePickerDemo selectedDate={setTransDate} />
 
     </form>
   );

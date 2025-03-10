@@ -19,6 +19,7 @@ function CreateTransaction() {
   const [amount, setAmount] = useState<number | undefined>();
   const [description, setDescription] = useState("");
   const [category,setCategory] = useState("");
+  const [transDate, setTransDate] = useState<Date | undefined>();
 
   return (
     <AlertDialog>
@@ -47,6 +48,7 @@ function CreateTransaction() {
             setAmount={setAmount}
             setDescription={setDescription}
             setCategory={setCategory}
+            setTransDate={setTransDate}
           />
         </div>
 
