@@ -1,3 +1,3 @@
-import {addTransaction,editTransaction} from "@/lib/Transaction"
+import {addTransaction,editTransaction,deleteTransaction} from "@/lib/Transaction"
 
-export {addTransaction as POST,editTransaction as PUT}
+export {addTransaction as POST,editTransaction as PUT, deleteTransaction as DELETE}

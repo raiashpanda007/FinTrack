@@ -111,5 +111,25 @@ const editTransaction = async (req: NextRequest) => {
         
     }
 }
+const deleteTransactionSchema = zod.object({
+    id: zod.string().min(1, "Transaction ID cannot be empty"),
+});
+const deleteTransaction = async (req: NextRequest) => {
+    const body = await req.json();
+    const parsedBody = deleteTransactionSchema.safeParse(body);
+    if(!parsedBody.success){
+        return NextResponse.json(new Response(400, "Invalid request body", { errors: parsedBody.error}), { status: 400 });
+    }
+    const { id } = parsedBody.data;
+    try {
+        await prisma.transaction.delete({
+            where: { id: id },
+        });
+        return NextResponse.json(new Response(200, "Transaction deleted successfully",{}), { status: 200 });
+    } catch (error) {
+        console.error("Error deleting transaction:", error);
+        return NextResponse.json(new Response(500, "Error in deleting the transaction", { error: error }), { status: 500 });
+    }
+}
 
-export { addTransaction,editTransaction };
+export { addTransaction,editTransaction,deleteTransaction };
