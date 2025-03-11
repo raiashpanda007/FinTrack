@@ -10,7 +10,7 @@ const tabs = ['Transaction', 'Category', 'Budget'];
 function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   // Extract the current tab from the URL (/dashboard/{tab})
   const currentTab = pathname.split('/')[2] || 'Transaction'; // Default to 'Transaction'
@@ -21,12 +21,12 @@ function Sidebar() {
   };
 
   return (
-    <div className="relative flex">
+    <div className="fixed flex w-1/6 ">
       {/* Toggle Button (Always Visible) */}
       <Button
         variant="ghost"
         onClick={() => setVisible((prev) => !prev)}
-        className="absolute top-4 left-4 z-20"
+        className="absolute top-2 z-20"
       >
         <FiMenu size={24} className="cursor-pointer text-white" />
       </Button>
@@ -34,7 +34,7 @@ function Sidebar() {
       {/* Sidebar */}
       <div
         className={`bg-black text-white h-screen p-4 transition-all duration-300 ${
-          visible ? 'w-64' : 'hidden'
+          visible ? 'w-full' : 'hidden'
         } overflow-hidden`}
       >
         {/* Sidebar Header */}
