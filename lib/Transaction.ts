@@ -89,10 +89,10 @@ const editTransactionSchema = zod.object({
 const editTransaction = async (req: NextRequest) => {
     const body = await req.json();
     const parsedBody = editTransactionSchema.safeParse(body);
-    if(!parsedBody.success){
-        return NextResponse.json(new Response(400, "Invalid request body", { errors: parsedBody.error}), { status: 400 });
+    if (!parsedBody.success) {
+        return NextResponse.json(new Response(400, "Invalid request body", { errors: parsedBody.error }), { status: 400 });
     }
-    const { id,amount,description,type,categoryId,date } = parsedBody.data;
+    const { id, amount, description, type, categoryId, date } = parsedBody.data;
     try {
         const transaction = await prisma.transaction.update({
             where: { id: id },
@@ -103,13 +103,13 @@ const editTransaction = async (req: NextRequest) => {
                 categoryId,
                 date: new Date(date),
             },
-            
+
         })
         return NextResponse.json(new Response(200, "Transaction updated successfully", transaction), { status: 200 });
     } catch (error) {
         console.error("Error updating transaction:", error);
-        return NextResponse.json(new Response(500, "Error in updating the transaction", { error:  error }), { status: 500 });
-        
+        return NextResponse.json(new Response(500, "Error in updating the transaction", { error: error }), { status: 500 });
+
     }
 }
 const deleteTransactionSchema = zod.object({
@@ -118,15 +118,15 @@ const deleteTransactionSchema = zod.object({
 const deleteTransaction = async (req: NextRequest) => {
     const body = await req.json();
     const parsedBody = deleteTransactionSchema.safeParse(body);
-    if(!parsedBody.success){
-        return NextResponse.json(new Response(400, "Invalid request body", { errors: parsedBody.error}), { status: 400 });
+    if (!parsedBody.success) {
+        return NextResponse.json(new Response(400, "Invalid request body", { errors: parsedBody.error }), { status: 400 });
     }
     const { id } = parsedBody.data;
     try {
         await prisma.transaction.delete({
             where: { id: id },
         });
-        return NextResponse.json(new Response(200, "Transaction deleted successfully",{}), { status: 200 });
+        return NextResponse.json(new Response(200, "Transaction deleted successfully", {}), { status: 200 });
     } catch (error) {
         console.error("Error deleting transaction:", error);
         return NextResponse.json(new Response(500, "Error in deleting the transaction", { error: error }), { status: 500 });
@@ -166,7 +166,7 @@ const monthlyTransactions = async (req: NextRequest) => {
 
         return NextResponse.json(new Response(200, "Monthly transactions fetched successfully", groupedTransactions));
     } catch (error) {
-        
+
     }
 
 }
@@ -182,7 +182,7 @@ const categoricalTransactions = async (req: NextRequest) => {
 
             if (!category) {
                 console.warn(`Category not found for transaction: ${transaction.id}`);
-                return acc; 
+                return acc;
             }
 
             // Use category name as key
@@ -198,7 +198,7 @@ const categoricalTransactions = async (req: NextRequest) => {
     } catch (error) {
         console.error("Error fetching categorical transactions:", error);
         return NextResponse.json(
-            new Response(500, "Error in fetching categorical transactions", { error:  error }),
+            new Response(500, "Error in fetching categorical transactions", { error: error }),
             { status: 500 }
         );
     }
@@ -243,6 +243,46 @@ const expenses = async (req: NextRequest) => {
     }
 };
 
+const earnings = async (req: NextRequest) => {
+    try {
+        const transactions = await prisma.transaction.findMany({
+            where: { type: "credit" },
+            orderBy: { date: "asc" },
+        });
+
+        const monthlyExpenses = transactions.reduce((acc, transaction) => {
+            const date = new Date(transaction.date);
+            const year = date.getFullYear();
+            const month = date.toLocaleString("default", { month: "long" });
+
+            const key = `${month} ${year}`;
+
+            if (!acc[key]) {
+                acc[key] = { total: 0, transactions: [] };
+            }
+
+            acc[key].transactions.push(transaction);
+            acc[key].total += transaction.amount;
+
+            return acc;
+        }, {} as Record<string, { total: number; transactions: typeof transactions }>);
+
+        // Calculate overall total
+        const overallTotal = Object.values(monthlyExpenses).reduce((sum, month) => sum + month.total, 0);
+
+        return NextResponse.json(
+            new Response(200, "Expenses fetched successfully", { monthlyExpenses, overallTotal })
+        );
+
+    } catch (error) {
+        console.error("Error fetching expenses:", error);
+        return NextResponse.json(
+            new Response(500, "Error fetching expenses", { error: error }),
+            { status: 500 }
+        );
+    }
+}
 
 
-export { addTransaction,editTransaction,deleteTransaction,getAllTransactions, monthlyTransactions, categoricalTransactions,expenses };
+
+export { addTransaction, editTransaction, deleteTransaction, getAllTransactions, monthlyTransactions, categoricalTransactions, expenses,earnings };
