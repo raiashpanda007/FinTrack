@@ -6,6 +6,7 @@ import { z as zod } from "zod";
 const prisma = new PrismaClient({
     log: ["query", "info", "warn", "error"]
 });
+import type { Category } from "@prisma/client";
 
 const addTransactionSchema = zod.object({
     amount: zod.string().refine((val) => {
@@ -132,4 +133,76 @@ const deleteTransaction = async (req: NextRequest) => {
     }
 }
 
-export { addTransaction,editTransaction,deleteTransaction };
+const getAllTransactions = async (req: NextRequest) => {
+    try {
+        const transactions = await prisma.transaction.findMany();
+        return NextResponse.json(new Response(200, "Transactions fetched successfully", transactions), { status: 200 });
+    } catch (error) {
+        console.error("Error fetching transactions:", error);
+        return NextResponse.json(new Response(500, "Error in fetching transactions", { error: error }), { status: 500 });
+    }
+}
+const monthlyTransactions = async (req: NextRequest) => {
+    // first get all the transactions
+    try {
+        const transactions = await prisma.transaction.findMany({
+            orderBy: { date: "asc" },
+        });
+        // sort them according to the date the spent 
+        const groupedTransactions = transactions.reduce((acc, transaction) => {
+            const date = new Date(transaction.date);
+            const year = date.getFullYear();
+            const month = date.toLocaleString("default", { month: "long" }); // Convert numeric month to name
+
+            const key = `${month} ${year}`;
+
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+
+            acc[key].push(transaction);
+            return acc;
+        }, {} as Record<string, typeof transactions>);
+
+        return NextResponse.json(new Response(200, "Monthly transactions fetched successfully", groupedTransactions));
+    } catch (error) {
+        
+    }
+
+}
+
+const categoricalTransactions = async (req: NextRequest) => {
+    try {
+        const transactions = await prisma.transaction.findMany();
+        const allCategories = await prisma.category.findMany();
+
+        const groupedTransactions = transactions.reduce((acc, transaction) => {
+            // Find category
+            const category = allCategories.find((category) => category.id === transaction.categoryId);
+
+            if (!category) {
+                console.warn(`Category not found for transaction: ${transaction.id}`);
+                return acc; // Skip if category is missing
+            }
+
+            // Use category name as key
+            if (!acc[category.name]) {
+                acc[category.name] = [];
+            }
+
+            acc[category.name].push(transaction);
+            return acc;
+        }, {} as Record<string, typeof transactions>);
+
+        return NextResponse.json(new Response(200, "Categorical transactions fetched successfully", groupedTransactions));
+    } catch (error) {
+        console.error("Error fetching categorical transactions:", error);
+        return NextResponse.json(
+            new Response(500, "Error in fetching categorical transactions", { error:  error }),
+            { status: 500 }
+        );
+    }
+};
+
+
+export { addTransaction,editTransaction,deleteTransaction,getAllTransactions, monthlyTransactions, categoricalTransactions };
