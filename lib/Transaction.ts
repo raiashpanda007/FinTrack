@@ -6,7 +6,7 @@ import { z as zod } from "zod";
 const prisma = new PrismaClient({
     log: ["query", "info", "warn", "error"]
 });
-import type { Category } from "@prisma/client";
+
 
 const addTransactionSchema = zod.object({
     amount: zod.string().refine((val) => {
@@ -182,7 +182,7 @@ const categoricalTransactions = async (req: NextRequest) => {
 
             if (!category) {
                 console.warn(`Category not found for transaction: ${transaction.id}`);
-                return acc; // Skip if category is missing
+                return acc; 
             }
 
             // Use category name as key
@@ -204,5 +204,45 @@ const categoricalTransactions = async (req: NextRequest) => {
     }
 };
 
+const expenses = async (req: NextRequest) => {
+    try {
+        const transactions = await prisma.transaction.findMany({
+            where: { type: "debit" },
+            orderBy: { date: "asc" },
+        });
 
-export { addTransaction,editTransaction,deleteTransaction,getAllTransactions, monthlyTransactions, categoricalTransactions };
+        const monthlyExpenses = transactions.reduce((acc, transaction) => {
+            const date = new Date(transaction.date);
+            const year = date.getFullYear();
+            const month = date.toLocaleString("default", { month: "long" });
+
+            const key = `${month} ${year}`;
+
+            if (!acc[key]) {
+                acc[key] = { total: 0, transactions: [] };
+            }
+
+            acc[key].transactions.push(transaction);
+            acc[key].total += transaction.amount;
+
+            return acc;
+        }, {} as Record<string, { total: number; transactions: typeof transactions }>);
+
+        // Calculate overall total
+        const overallTotal = Object.values(monthlyExpenses).reduce((sum, month) => sum + month.total, 0);
+
+        return NextResponse.json(
+            new Response(200, "Expenses fetched successfully", { monthlyExpenses, overallTotal })
+        );
+    } catch (error) {
+        console.error("Error fetching expenses:", error);
+        return NextResponse.json(
+            new Response(500, "Error fetching expenses", { error: error }),
+            { status: 500 }
+        );
+    }
+};
+
+
+
+export { addTransaction,editTransaction,deleteTransaction,getAllTransactions, monthlyTransactions, categoricalTransactions,expenses };
