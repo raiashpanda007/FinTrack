@@ -9,10 +9,7 @@ const prisma = new PrismaClient({
 
 
 const addTransactionSchema = zod.object({
-    amount: zod.string().refine((val) => {
-        const parsedNumber = Number(val);
-        return !isNaN(parsedNumber) && parsedNumber > 0;
-    }, { message: "Amount must be a positive number" }),
+    amount: zod.number().positive("Amount must be a positive number"),
 
     description: zod.string().min(1, "Description cannot be empty"),
 
@@ -24,7 +21,7 @@ const addTransactionSchema = zod.object({
         const parsedDate = new Date(val);
         const today = new Date();
 
-        // Convert both dates to YYYY-MM-DD format to ignore time differences
+        
         const formattedDate = parsedDate.toISOString().split("T")[0];
         const formattedToday = today.toISOString().split("T")[0];
 

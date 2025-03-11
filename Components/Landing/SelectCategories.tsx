@@ -57,7 +57,7 @@ function SelectCategories({ selectedCategory }: Categoriesprops) {
                 <SelectItem
                   key={category.id}
                   value={category.id}
-                  onClick={() => selectedCategory(category.id)}
+                  onClick={() => {  selectedCategory(category.id); }}
                 >
                   {category.name}
                 </SelectItem>

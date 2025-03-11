@@ -14,13 +14,55 @@ import {
 import { useState } from "react";
 import PrimaryButton from "../PrimaryButton";
 import CreateTransactionForm from "./CreateTransForm";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function CreateTransaction() {
+  const router = useRouter()
+
+
   const [amount, setAmount] = useState<number | undefined>();
   const [description, setDescription] = useState("");
   const [category,setCategory] = useState("");
+  const [type,setType] = useState("credit");
   const [transDate, setTransDate] = useState<Date | undefined>();
+  const [error , setError] = useState<string | null>(null);
 
+
+  const CreateTransaction = async () => {
+    if (!amount || !description || !category || !transDate) {
+      setError("All fields are required");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/transaction`,
+        {
+          amount,
+          description,
+          categoryId: category,
+          date: transDate,
+          type,
+        },
+        { withCredentials: true }
+      );
+      router.push("/dashboard");
+  
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+  
+      // Type assertion for Axios errors
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "An unexpected error occurred.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    }
+  };
+    
+  
   return (
     <AlertDialog>
       {/* Trigger asChild so we don't nest a button inside a button */}
@@ -49,11 +91,15 @@ function CreateTransaction() {
             setDescription={setDescription}
             setCategory={setCategory}
             setTransDate={setTransDate}
+            setType={setType}
           />
         </div>
 
         {/* Footer with buttons stacked on mobile, side-by-side on larger screens */}
         <AlertDialogFooter className="mt-6 flex flex-col sm:flex-row gap-3 w-full">
+          {error && <p className="text-red-500 text-sm sm:text-base">
+            {error}
+          </p>}
           <AlertDialogCancel className="w-full sm:w-auto">
             Cancel
           </AlertDialogCancel>
@@ -62,7 +108,7 @@ function CreateTransaction() {
           <AlertDialogAction asChild>
             <PrimaryButton
               label="Add Transaction"
-              onClick={() => console.log("Clicked")}
+              onClick={CreateTransaction}
             />
           </AlertDialogAction>
         </AlertDialogFooter>

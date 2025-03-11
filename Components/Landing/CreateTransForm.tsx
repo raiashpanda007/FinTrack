@@ -13,6 +13,7 @@ interface CreateTransFormProps {
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   setTransDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  setType:React.Dispatch<React.SetStateAction<string>>;
 }
 function CreateTransForm({
   amount,
@@ -20,7 +21,8 @@ function CreateTransForm({
   setAmount,
   setDescription,
   setCategory,
-  setTransDate
+  setTransDate,
+  setType
 }: CreateTransFormProps) {
   return (
     <form className="space-y-4">
@@ -42,8 +44,9 @@ function CreateTransForm({
         <Label htmlFor="amount">Amount</Label>
         <Input
           id="amount"
-          type="number"
           value={amount}
+          type="number"
+        
           onChange={(e) => setAmount(Number(e.target.value))}
           placeholder="Enter the transaction amount"
         />
