@@ -7,20 +7,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Transaction {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  amount     Float
-  description   String
-  categoryId String   @db.ObjectId 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  type       String
-  date       DateTime
+enum TransactionType {
+  credit
+  debit
 }
 
+model Transaction {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  amount      Float
+  description String
+  categoryId  String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  type        TransactionType
+  date        DateTime
+}
+
+
 model Category {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  name      String  @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum Month {
+  JANUARY
+  FEBRUARY
+  MARCH
+  APRIL
+  MAY
+  JUNE
+  JULY
+  AUGUST
+  SEPTEMBER
+  OCTOBER
+  NOVEMBER
+  DECEMBER
+}
+
+model Budget {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount     Float
+  categoryId String   @db.ObjectId
+  month      Month
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([categoryId, month])
+}
+
