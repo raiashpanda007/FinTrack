@@ -85,7 +85,7 @@ function page() {
     getBudget();
   }, [category, month]);
   return (
-    <div className="w-full h-full p-2">
+    <div className="w-full h-full relative z-[-10] p-2">
       <div className="w-full flex justify-evenly">
         <SelectCategories selectedCategory={setCategory} />
         <SelectMonths selectedMonth={setMonth} />

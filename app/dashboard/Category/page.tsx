@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SelectCategories from "@/Components/Landing/SelectCategories";
 import TransactionDetails from "@/Components/Dashboard/TransactionDetails";
+import CategoryExpensesChart from "@/Components/Dashboard/CategoryExpensesChart";
 
 interface TransactionProps {
   id: string;
@@ -76,7 +77,9 @@ function Page() {
 
   return (
     <div className="w-full h-full p-2">
-      <div className="h-[calc(500px)] w-full relative top-5 z-[-10]">hi</div>
+      <div className="h-[calc(500px)] w-full relative top-5 z-[-10]">
+        <CategoryExpensesChart />
+      </div>
       <SelectCategories selectedCategory={setCategory} />
 
       {category && (
