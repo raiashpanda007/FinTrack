@@ -21,7 +21,7 @@ function Sidebar() {
   };
 
   return (
-    <div className="fixed flex w-1/6 ">
+    <div className="fixed flex z-50 w-1/6 bg-black">
       {/* Toggle Button (Always Visible) */}
       <Button
         variant="ghost"

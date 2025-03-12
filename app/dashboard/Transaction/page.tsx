@@ -3,7 +3,7 @@ import { useEffect,useState } from "react";
 import CreateTransaction from "@/Components/Landing/CreateTransaction";
 import axios from "axios";
 import TransactionDetails from "@/Components/Dashboard/TransactionDetails";
-import { get } from "http";
+import MonthlyExpensesChart from "@/Components/Dashboard/MonthlyCharts";
 interface  TransactionProps {
     id:string
     amount: number;
@@ -22,6 +22,7 @@ function page() {
     const [transactions, setTransactions] = useState<TransactionProps[]>([]);
     const [expenses, setExpenses] = useState<ExpensesProps>();
     const [earnings, setEarnings] = useState<ExpensesProps>();
+    const [selectYears, setSelectYears] = useState<string>("");
     const getTransactions = async () => {
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/transaction`, {
@@ -67,7 +68,9 @@ function page() {
       <div className="ml-10">
       <CreateTransaction />
       </div>
-      <div className="h-[calc(500px)] w-full ">hi</div>
+      <div className="h-[calc(500px)] w-full ">
+        <MonthlyExpensesChart />
+      </div>
       <div className="w-full h-32 border rounded-2xl flex">
         <div className="h-full w-1/2 p-2 border-r flex flex-col justify-evenly items-center">
           <h1 className="text-4xl font-extrabold  ">Total Debit </h1>
