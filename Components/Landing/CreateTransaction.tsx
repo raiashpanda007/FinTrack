@@ -30,6 +30,7 @@ function CreateTransaction() {
 
 
   const CreateTransaction = async () => {
+    console.log(amount, description, category, transDate);
     if (!amount || !description || !category || !transDate) {
       setError("All fields are required");
       return;

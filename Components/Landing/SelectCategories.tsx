@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -9,8 +9,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import axios from "axios"
+} from "@/components/ui/select";
+import axios from "axios";
 
 interface Categoriesprops {
   selectedCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -46,7 +46,12 @@ function SelectCategories({ selectedCategory }: Categoriesprops) {
       {error ? (
         <div>{error}</div>
       ) : (
-        <Select>
+        <Select
+          onValueChange={(value) => {
+            selectedCategory(value);
+            console.log(value);
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
@@ -54,11 +59,7 @@ function SelectCategories({ selectedCategory }: Categoriesprops) {
             <SelectGroup>
               <SelectLabel>Categories</SelectLabel>
               {categories.map((category) => (
-                <SelectItem
-                  key={category.id}
-                  value={category.id}
-                  onClick={() => {  selectedCategory(category.id); console.log(category.id) }}
-                >
+                <SelectItem key={category.id} value={category.id}>
                   {category.name}
                 </SelectItem>
               ))}

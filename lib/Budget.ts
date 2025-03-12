@@ -74,11 +74,8 @@ const setMonthlyCategoryBudget = async (req: NextRequest) => {
     }
 };
 
-// Zod schema for fetching budgets
-const getBudgetMonthSchema = zod.object({
-    month: zod.nativeEnum(Month).default(() => getCurrentMonth()), // Dynamically gets current month
-    categoryId: zod.string().optional(),
-});
+
+
 const getBudgetsMonth = async (req: NextRequest) => {
     try {
         const monthHeader = req.headers.get("month"); // Custom header for month
