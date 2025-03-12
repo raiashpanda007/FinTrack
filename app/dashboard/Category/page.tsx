@@ -25,6 +25,7 @@ function Page() {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [overallTotal, setOverallTotal] = useState<number>(0);
 
   // Fetch categories once on mount
   useEffect(() => {
@@ -57,7 +58,12 @@ function Page() {
           { withCredentials: true }
         );
         const categoryTransactions = response.data.data[selectedCategory?.name as any]  || [];
+        categoryTransactions.map((categoryTrans:TransactionProps)=>{
+            categoryTrans.type === "debit" ? setOverallTotal(overallTotal+categoryTrans.amount) : setOverallTotal(overallTotal);
+        })
         setTransactions(categoryTransactions);
+
+
       } catch (err) {
         console.error(err);
         setError("Failed to load transactions.");
@@ -70,13 +76,17 @@ function Page() {
 
   return (
     <div className="w-full h-full p-2">
-      <div className="h-[calc(500px)] w-full relative top-5">hi</div>
+      <div className="h-[calc(500px)] w-full relative top-5 z-[-10]">hi</div>
       <SelectCategories selectedCategory={setCategory} />
 
       {category && (
         <h1 className="text-2xl">
           Total Expenses for {selectedCategoryName}
+            <span className="text-red-500 ml-2">
+                {overallTotal}
+            </span>
         </h1>
+        
       )}
 
       {loading ? (
