@@ -106,33 +106,41 @@ function Page() {
   };
 
   return (
-    <div className="w-full h-full relative  p-2">
-      <div className="w-full flex justify-evenly relative z-[10]">
+    <div className="w-full h-full p-4 md:p-6 lg:p-8">
+      {/* Filters Section */}
+      <div className="w-full flex flex-wrap justify-center gap-4">
         <SelectCategories selectedCategory={setCategory} />
         <SelectMonths selectedMonth={setMonth} />
       </div>
-      <div className="h-[500px] w-full relative top-5 z-[-10]">
-        {/* ✅ Pass categorized transactions */}
+
+      {/* Chart Section */}
+      <div className="w-full h-[400px] md:h-[500px] mt-6">
         <BudgetComparisonChart budgets={budgets} transactions={categorizedTransactions} />
       </div>
 
-      <div>
-        <h1 className="text-red-500 text-2xl font-extrabold">Create a new budget</h1>
-        <form className="flex flex-col space-y-4">
-          <p className="font-bold">Budget</p>
+      {/* Budget Creation Form */}
+      <div className="mt-8  p-4 md:p-6 rounded-lg shadow-lg">
+        <h1 className="text-red-500 text-xl md:text-2xl font-bold mb-4 text-center">Create a New Budget</h1>
+        
+        <form className="flex flex-col space-y-4 items-center">
+          <p className="font-bold text-center">Budget</p>
+          
           <Input
             id="budget"
             type="number"
             placeholder="Enter budget"
             value={budgetAmount}
             onChange={(e) => setBudgetAmount(parseInt(e.target.value))}
-            className="w-1/3"
+            className="w-full md:w-1/2 lg:w-1/3 text-center"
           />
-          <div className="w-1/3 flex justify-between">
+
+          <div className="w-full md:w-1/2 lg:w-1/3 flex flex-wrap justify-between gap-4">
             <SelectCategories selectedCategory={setSelectedCategory} />
             <SelectMonths selectedMonth={setSelectedMonth} />
           </div>
-          <div className="w-1/3">
+
+          <div className="w-full md:w-1/2 lg:w-1/3 text-center">
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <PrimaryButton label="Create Budget" onClick={createBudget} />
           </div>
         </form>

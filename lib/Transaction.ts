@@ -53,9 +53,9 @@ const addTransaction = async (req: NextRequest) => {
 
         return NextResponse.json(new Response(201, "Transaction created successfully", transaction), { status: 201 });
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error creating transaction:", error);
-        return NextResponse.json(new Response(500, "Error in creating the transaction", { error: error.message || error }), { status: 500 });
+        return NextResponse.json(new Response(500, "Error in creating the transaction", { error }), { status: 500 });
     }
 };
 const editTransactionSchema = zod.object({
@@ -126,7 +126,7 @@ const deleteTransaction = async (req: NextRequest) => {
     }
 }
 
-const getAllTransactions = async (req: NextRequest) => {
+const getAllTransactions = async () => {
     try {
         const transactions = await prisma.transaction.findMany();
         return NextResponse.json(new Response(200, "Transactions fetched successfully", transactions), { status: 200 });
@@ -135,7 +135,7 @@ const getAllTransactions = async (req: NextRequest) => {
         return NextResponse.json(new Response(500, "Error in fetching transactions", { error: error }), { status: 500 });
     }
 }
-const monthlyTransactions = async (req: NextRequest) => {
+const monthlyTransactions = async () => {
     // first get all the transactions
     try {
         const transactions = await prisma.transaction.findMany({
@@ -159,12 +159,14 @@ const monthlyTransactions = async (req: NextRequest) => {
 
         return NextResponse.json(new Response(200, "Monthly transactions fetched successfully", groupedTransactions));
     } catch (error) {
+        console.error("Error fetching monthly transactions:", error);
+        return NextResponse.json(new Response(500, "Error in fetching monthly transactions", { error: error }), { status: 500 });
 
     }
 
 }
 
-const categoricalTransactions = async (req: NextRequest) => {
+const categoricalTransactions = async () => {
     try {
         const transactions = await prisma.transaction.findMany();
         const allCategories = await prisma.category.findMany();
@@ -197,7 +199,7 @@ const categoricalTransactions = async (req: NextRequest) => {
     }
 };
 
-const expenses = async (req: NextRequest) => {
+const expenses = async () => {
     try {
         const transactions = await prisma.transaction.findMany({
             where: { type: "debit" },
@@ -236,7 +238,7 @@ const expenses = async (req: NextRequest) => {
     }
 };
 
-const earnings = async (req: NextRequest) => {
+const earnings = async () => {
     try {
         const transactions = await prisma.transaction.findMany({
             where: { type: "credit" },

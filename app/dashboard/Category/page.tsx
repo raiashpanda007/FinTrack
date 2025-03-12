@@ -58,10 +58,12 @@ function Page() {
           `${process.env.NEXT_PUBLIC_API_URL}/transaction/filter/category`,
           { withCredentials: true }
         );
-        const categoryTransactions = response.data.data[selectedCategory?.name as any]  || [];
-        categoryTransactions.map((categoryTrans:TransactionProps)=>{
-            categoryTrans.type === "debit" ? setOverallTotal(overallTotal+categoryTrans.amount) : setOverallTotal(overallTotal);
-        })
+        const categoryTransactions = response.data.data[selectedCategory?.name ||""]  || [];
+        categoryTransactions.forEach((categoryTrans: TransactionProps) => {
+          if (categoryTrans.type === "debit") {
+            setOverallTotal((prevTotal) => prevTotal + categoryTrans.amount);
+          }
+        });
         setTransactions(categoryTransactions);
 
 
@@ -101,6 +103,7 @@ function Page() {
           transactions.map((transaction) => (
             <TransactionDetails
               key={transaction.id}
+              id={transaction.id}
               amount={transaction.amount}
               date={transaction.date}
               type={transaction.type}
