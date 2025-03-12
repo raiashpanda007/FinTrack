@@ -60,11 +60,7 @@ const addTransaction = async (req: NextRequest) => {
 };
 const editTransactionSchema = zod.object({
     id: zod.string().min(1, "Transaction ID cannot be empty"),
-    amount: zod.string().refine((val) => {
-        const parsedNumber = Number(val);
-        return !isNaN(parsedNumber) && parsedNumber > 0;
-    }, { message: "Amount must be a positive number" }),
-
+    amount: zod.number(),
     description: zod.string().min(1, "Description cannot be empty"),
 
     type: zod.enum(["credit", "debit"]),

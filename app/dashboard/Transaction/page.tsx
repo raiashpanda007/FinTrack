@@ -93,6 +93,7 @@ function page() {
         transactions.map((transaction) => (
           <TransactionDetails
             key={transaction.id}
+            id={transaction.id}
             amount={transaction.amount}
             date={transaction.date}
             type={transaction.type}
